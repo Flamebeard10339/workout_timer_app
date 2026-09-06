@@ -1,9 +1,6 @@
-## Copy this file into your fdroiddata fork as
-##   metadata/io.github.flamebeard10339.circuitclock.yml
-## and delete these comment lines. F-Droid does not read it from this repo — it lives
-## here only so the two stay in step. See PUBLISHING.md.
-
 Categories:
+  - Timer
+  - Workout
   - Sports & Health
 License: MIT
 AuthorName: Flamebeard10339
@@ -23,6 +20,6 @@ Builds:
       - yes
 
 AutoUpdateMode: Version
-UpdateCheckMode: Tags ^v[0-9.]+$   # only version tags; ignores the CI dev-build tag
+UpdateCheckMode: Tags ^v[0-9.]+$
 CurrentVersion: '1.0'
 CurrentVersionCode: 1

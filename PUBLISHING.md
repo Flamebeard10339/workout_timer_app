@@ -1,48 +1,34 @@
 # Getting Circuit Clock into F-Droid
 
-F-Droid does not host uploaded APKs. It builds every app itself, from a git tag in your
+F-Droid does not host uploaded APKs. It builds every app itself, from a git tag in this
 repository, using a recipe that lives in F-Droid's own **fdroiddata** repository on GitLab.
 So publishing is two things: tag a release here, then get a recipe merged there.
 
-You are the author, so submit the recipe yourself as a merge request. (The alternative —
-opening an RFP issue asking someone else to package it — is for apps you did not write, and
-it sits in a long queue.)
+We are the author, so we submit the recipe ourselves as a merge request. (The alternative —
+an RFP issue asking someone else to package it — is for apps you did not write, and sits in
+a long queue.)
 
 ---
 
-## 1. Confirm it builds
+## Done
 
-Do this before tagging. F-Droid's CI builds from a clean clone, and a failure there costs a
-review round trip.
+- [x] **The build is verified.** The `Build APK` workflow compiles the project from a clean
+      checkout on every push to `main`, and is green. That is the same thing F-Droid's CI
+      does, so a green run here is a strong signal.
+- [x] **`v1.0` is tagged and pushed**, pointing at commit `3ee4c9f`, with a matching
+      [GitHub release](https://github.com/Flamebeard10339/workout_timer_app/releases/tag/v1.0)
+      so the recipe's `Changelog:` link resolves.
+- [x] **The recipe is written and pre-flight checked** —
+      [`fdroid/io.github.flamebeard10339.circuitclock.yml`](fdroid/io.github.flamebeard10339.circuitclock.yml).
+      Copy-paste ready, no comments to strip. Its categories were validated against the real
+      `config/categories.yml` in fdroiddata (113 categories; `Timer` is defined there as
+      "Interval timing, timekeeping, countdown").
+- [x] **Listing text** is in `fastlane/metadata/android/en-US/`, all within F-Droid's length
+      caps, with a changelog named for the versionCode.
 
-The `Build APK` GitHub Actions workflow in this repo already does exactly that on every push
-to `main` — check the Actions tab. If it is green, the build is good.
+## Remaining — needs a GitLab account
 
-Locally, if you have JDK 17 and the Android SDK:
-
-```bash
-git clone https://github.com/Flamebeard10339/workout_timer_app /tmp/cc-check
-cd /tmp/cc-check
-gradle wrapper          # the wrapper jar is not committed; F-Droid supplies its own too
-./gradlew assembleRelease
-```
-
-An unsigned release APK appears in `app/build/outputs/apk/release/`.
-
-## 2. Tag a release
-
-F-Droid builds from a tag, not a branch.
-
-```bash
-git tag -a v1.0 -m "Circuit Clock 1.0"
-git push origin v1.0
-gh release create v1.0 --title "Circuit Clock 1.0" --notes "First release."
-```
-
-The tag name, `versionCode` and `versionName` must line up with the recipe: `v1.0`,
-`versionCode = 1`, `versionName = "1.0"` in `app/build.gradle.kts`.
-
-## 3. Fork fdroiddata and add the recipe
+### 1. Fork fdroiddata and add the recipe
 
 ```bash
 # Fork https://gitlab.com/fdroid/fdroiddata in the GitLab UI first, then:
@@ -51,10 +37,9 @@ cd fdroiddata
 git checkout -b circuitclock
 cp <this repo>/fdroid/io.github.flamebeard10339.circuitclock.yml \
    metadata/io.github.flamebeard10339.circuitclock.yml
-# delete the leading ## comment lines from the copy
 ```
 
-## 4. Lint and test-build the recipe
+### 2. Lint and test-build the recipe
 
 This needs `fdroidserver`, which is Linux-only. On Windows use WSL, or Docker:
 
@@ -72,7 +57,7 @@ fdroid build -v -l io.github.flamebeard10339.circuitclock   # the real build
 
 `fdroid build` is the one that matters. If it succeeds, F-Droid's CI almost certainly will.
 
-## 5. Open the merge request
+### 3. Open the merge request
 
 ```bash
 git add metadata/io.github.flamebeard10339.circuitclock.yml
@@ -81,11 +66,10 @@ git push -u origin circuitclock
 ```
 
 Open the MR against `fdroid/fdroiddata` `master`, titled **New app: Circuit Clock**. GitLab
-CI runs the lint and build again. A maintainer reviews it; expect days to a few weeks, and
-expect questions. Answer them in the MR thread.
+CI runs lint and build again. A maintainer reviews it; expect days to a few weeks, and
+expect questions — answer them in the MR thread.
 
-Once merged, the app appears in the repository after the next build cycle — usually a day
-or two.
+Once merged, the app appears after the next build cycle, usually a day or two.
 
 ---
 
@@ -96,14 +80,13 @@ or two.
 | Free software licence, `LICENSE` present | MIT |
 | No proprietary dependencies | Only `androidx.webkit` |
 | No tracking, ads, or analytics | None |
-| Builds from source with no prebuilt binaries in-tree | No jars committed; the Gradle wrapper jar is deliberately absent |
-| Reproducible-friendly | `dependenciesInfo` is excluded from the APK |
+| Builds from source with no prebuilt binaries in-tree | Verified: no `.jar`/`.aar`/`.so`/`.apk` committed. The Gradle wrapper jar is deliberately absent — F-Droid supplies its own |
+| Reproducible-friendly | `dependenciesInfo` excluded from the APK |
 | Anti-features to declare | None |
-| Listing text and changelog | `fastlane/metadata/android/en-US/` |
 
-The permission list is empty, which reviewers like and which is worth saying in the MR
-description: without `android.permission.INTERNET` the app is incapable of network access,
-so "works offline" is enforced by the OS rather than asserted by the developer.
+Worth putting in the MR description: **the manifest declares no permissions at all**, so
+without `android.permission.INTERNET` the app is incapable of network access. "Works
+offline" is enforced by the OS rather than asserted by the developer. Reviewers notice this.
 
 ## Updating later
 

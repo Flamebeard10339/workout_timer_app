@@ -1,0 +1,25 @@
+An interval timer for circuit, Tabata, EMOM and any other structure you can describe
+as loops inside loops.
+
+Build a workout from named sections, each with its own duration and colour. Wrap any
+group of them in a named loop with a repeat count, and nest loops inside loops as deep
+as your session actually goes. Drag a row sideways to change what it sits inside.
+
+While a workout runs, the countdown fills the screen, and the full nesting path is
+stacked along the bottom in each level's own colour, so a glance tells you which round
+of which block you are in. Two soft beeps at two and one second, a louder tone at zero,
+and the name of each section spoken aloud as it starts.
+
+Works entirely offline:
+
+* No internet permission. The app cannot open a network connection.
+* No accounts, no analytics, no advertising identifiers, no telemetry.
+* Workouts are stored on the device and never leave it.
+* Fonts are bundled, so nothing is fetched on first run.
+
+The volume slider in the running screen scales the cues relative to your device volume,
+and the screen is kept awake for as long as a workout is running.
+
+Spoken section names use whichever text-to-speech engine your device provides. If you
+want them in airplane mode, choose an offline voice under
+Settings > System > Languages & input > Text-to-speech.

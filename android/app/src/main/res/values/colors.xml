@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matches the app's own ground colour so there is no flash before the page paints. -->
+    <color name="ground">#FF10151B</color>
+    <color name="ic_launcher_background">#FF10151B</color>
+</resources>

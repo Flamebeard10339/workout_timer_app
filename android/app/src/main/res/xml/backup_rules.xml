@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The workout library lives in WebView local storage; include it so a device
+     restore brings the workouts back. Nothing here leaves the device unless the
+     user has cloud backup switched on themselves. -->
+<full-backup-content>
+    <include domain="database" path="." />
+    <include domain="file" path="app_webview/" />
+</full-backup-content>

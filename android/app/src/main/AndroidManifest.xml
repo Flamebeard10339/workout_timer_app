@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      No <uses-permission> elements, deliberately.
+
+      Without android.permission.INTERNET the WebView cannot open a socket at all, so the
+      offline guarantee is enforced by the OS rather than by the page's own CSP. Keeping
+      the screen awake uses FLAG_KEEP_SCREEN_ON, which needs no permission (unlike
+      WAKE_LOCK), and text-to-speech goes through the system engine, which needs none either.
+    -->
+
+    <application
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.CircuitClock">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="fullUser"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.CircuitClock"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|navigation|uiMode|density|fontScale|layoutDirection|locale">
+            <!--
+              configChanges matters more than usual here: without it, rotating the phone
+              destroys and recreates the activity, the WebView reloads, and a workout in
+              progress resets to zero.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

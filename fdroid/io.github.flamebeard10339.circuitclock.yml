@@ -1,0 +1,28 @@
+## Copy this file into your fdroiddata fork as
+##   metadata/io.github.flamebeard10339.circuitclock.yml
+## and delete these comment lines. F-Droid does not read it from this repo — it lives
+## here only so the two stay in step. See PUBLISHING.md.
+
+Categories:
+  - Sports & Health
+License: MIT
+AuthorName: Flamebeard10339
+SourceCode: https://github.com/Flamebeard10339/workout_timer_app
+IssueTracker: https://github.com/Flamebeard10339/workout_timer_app/issues
+Changelog: https://github.com/Flamebeard10339/workout_timer_app/releases
+
+RepoType: git
+Repo: https://github.com/Flamebeard10339/workout_timer_app.git
+
+Builds:
+  - versionName: '1.0'
+    versionCode: 1
+    commit: v1.0
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: '1.0'
+CurrentVersionCode: 1

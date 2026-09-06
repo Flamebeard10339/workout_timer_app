@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "org.circuitclock.timer"
+    namespace = "io.github.flamebeard10339.circuitclock"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "org.circuitclock.timer"
+        applicationId = "io.github.flamebeard10339.circuitclock"
         minSdk = 26          // adaptive icons; also well clear of the old addJavascriptInterface flaw
         targetSdk = 34
         versionCode = 1
@@ -52,7 +52,7 @@ android {
 // is absent (someone took only the android/ directory), this is a no-op and the copy
 // already checked in under src/main/assets is used as-is.
 val syncAppAsset by tasks.registering(Copy::class) {
-    from("${rootDir}/../workout-timer.html")
+    from("${rootDir}/workout-timer.html")
     into(layout.projectDirectory.dir("src/main/assets"))
 }
 tasks.named("preBuild") { dependsOn(syncAppAsset) }

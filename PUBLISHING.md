@@ -10,38 +10,37 @@ it sits in a long queue.)
 
 ---
 
-## 1. Tag a release
+## 1. Confirm it builds
 
-F-Droid builds from a tag, not from a branch.
-
-```bash
-git tag -a v1.0 -m "Circuit Clock 1.0"
-git push origin v1.0
-```
-
-Optionally make it a GitHub release too, so the `Changelog:` link in the recipe resolves:
-
-```bash
-gh release create v1.0 --title "Circuit Clock 1.0" --notes "First release."
-```
-
-The tag name, `versionCode` and `versionName` must line up with the recipe. Right now that
-is `v1.0`, `versionCode = 1`, `versionName = "1.0"` in `app/build.gradle.kts`.
-
-## 2. Confirm it builds from a clean clone
-
-Do this before submitting — F-Droid's CI will do exactly this, and a failure there costs a
+Do this before tagging. F-Droid's CI builds from a clean clone, and a failure there costs a
 review round trip.
 
+The `Build APK` GitHub Actions workflow in this repo already does exactly that on every push
+to `main` — check the Actions tab. If it is green, the build is good.
+
+Locally, if you have JDK 17 and the Android SDK:
+
 ```bash
-git clone --branch v1.0 https://github.com/Flamebeard10339/workout_timer_app /tmp/cc-check
+git clone https://github.com/Flamebeard10339/workout_timer_app /tmp/cc-check
 cd /tmp/cc-check
 gradle wrapper          # the wrapper jar is not committed; F-Droid supplies its own too
 ./gradlew assembleRelease
 ```
 
-Requires JDK 17 and the Android SDK. An unsigned release APK appears in
-`app/build/outputs/apk/release/`.
+An unsigned release APK appears in `app/build/outputs/apk/release/`.
+
+## 2. Tag a release
+
+F-Droid builds from a tag, not a branch.
+
+```bash
+git tag -a v1.0 -m "Circuit Clock 1.0"
+git push origin v1.0
+gh release create v1.0 --title "Circuit Clock 1.0" --notes "First release."
+```
+
+The tag name, `versionCode` and `versionName` must line up with the recipe: `v1.0`,
+`versionCode = 1`, `versionName = "1.0"` in `app/build.gradle.kts`.
 
 ## 3. Fork fdroiddata and add the recipe
 
@@ -60,8 +59,7 @@ cp <this repo>/fdroid/io.github.flamebeard10339.circuitclock.yml \
 This needs `fdroidserver`, which is Linux-only. On Windows use WSL, or Docker:
 
 ```bash
-docker run --rm -it -v "$PWD":/repo -w /repo \
-  registry.gitlab.com/fdroid/fdroidserver:latest bash
+docker run --rm -it -v "$PWD":/repo -w /repo registry.gitlab.com/fdroid/fdroidserver:latest bash
 ```
 
 Then, inside:
@@ -86,8 +84,8 @@ Open the MR against `fdroid/fdroiddata` `master`, titled **New app: Circuit Cloc
 CI runs the lint and build again. A maintainer reviews it; expect days to a few weeks, and
 expect questions. Answer them in the MR thread.
 
-Once merged, the app appears in the repository after the next build cycle — usually within
-a day or two.
+Once merged, the app appears in the repository after the next build cycle — usually a day
+or two.
 
 ---
 
@@ -103,26 +101,29 @@ a day or two.
 | Anti-features to declare | None |
 | Listing text and changelog | `fastlane/metadata/android/en-US/` |
 
-The permission list is empty, which reviewers like and which is worth pointing out in the
-MR description: without `android.permission.INTERNET` the app is incapable of network
-access, so "works offline" is enforced by the OS rather than asserted by the developer.
+The permission list is empty, which reviewers like and which is worth saying in the MR
+description: without `android.permission.INTERNET` the app is incapable of network access,
+so "works offline" is enforced by the OS rather than asserted by the developer.
 
 ## Updating later
 
-With `UpdateCheckMode: Tags` and `AutoUpdateMode: Version`, F-Droid picks up new releases on
-its own. To ship 1.1:
+`AutoUpdateMode: Version` plus a tag-matching `UpdateCheckMode` means F-Droid picks up new
+releases on its own. To ship 1.1:
 
 1. Bump `versionCode` to 2 and `versionName` to `"1.1"` in `app/build.gradle.kts`.
-2. Add `fastlane/metadata/android/en-US/changelogs/2.txt` — the file is named for the
-   `versionCode`, not the version name.
+2. Add `fastlane/metadata/android/en-US/changelogs/2.txt` — named for the **versionCode**,
+   not the version name.
 3. Commit, tag `v1.1`, push the tag.
 
 F-Droid notices the tag and builds it. No second merge request.
+
+The recipe's `UpdateCheckMode` carries a regex restricting it to tags shaped like `v1.2.3`.
+That matters because CI publishes a rolling `dev-build` tag for sideloading; without the
+filter, F-Droid would try to read it as a version number.
 
 ## Optional: screenshots
 
 The listing looks bare without them. Drop PNGs into
 `fastlane/metadata/android/en-US/images/phoneScreenshots/` (named `1.png`, `2.png`, …) and
-they are picked up automatically. A phone icon at
-`fastlane/metadata/android/en-US/images/icon.png` (512×512) is also used if present;
-otherwise F-Droid renders the launcher icon.
+they are picked up automatically. A 512×512 `images/icon.png` is used if present; otherwise
+F-Droid renders the launcher icon.

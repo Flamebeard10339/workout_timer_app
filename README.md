@@ -21,8 +21,12 @@ fdroid/               the F-Droid build recipe, mirrored from fdroiddata
 PUBLISHING.md         how this gets into F-Droid
 ```
 
-`app/src/main/assets/workout-timer.html` is a copy of the root file. A Gradle task re-copies
-it on every build, so edit the root file and the APK follows.
+`app/src/main/assets/workout-timer.html` is a committed copy of the root file. After editing
+the root file, copy it across — CI fails the build if the two differ:
+
+```bash
+cp workout-timer.html app/src/main/assets/workout-timer.html
+```
 
 ## The offline guarantee
 

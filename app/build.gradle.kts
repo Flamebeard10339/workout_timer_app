@@ -48,15 +48,6 @@ android {
     }
 }
 
-// Keep the bundled asset identical to the canonical file at the repo root. If that file
-// is absent (someone took only the android/ directory), this is a no-op and the copy
-// already checked in under src/main/assets is used as-is.
-val syncAppAsset by tasks.registering(Copy::class) {
-    from("${rootDir}/workout-timer.html")
-    into(layout.projectDirectory.dir("src/main/assets"))
-}
-tasks.named("preBuild") { dependsOn(syncAppAsset) }
-
 dependencies {
     // The only dependency. WebViewAssetLoader serves assets over a real https origin so
     // localStorage is durable and the page counts as a secure context.

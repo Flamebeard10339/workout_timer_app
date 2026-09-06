@@ -154,10 +154,6 @@ main.pad{flex:1;padding:20px 0 40px}
 }
 .card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--dim)}
 .card-meta .dot{width:3px;height:3px;border-radius:50%;background:var(--line-2)}
-.tag{
-  font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-  padding:2px 6px;border-radius:5px;border:1px solid var(--line-2);color:var(--faint);
-}
 .card-actions{display:flex;align-items:center;padding-right:8px;gap:2px}
 
 .empty{
@@ -648,7 +644,7 @@ function summary(w) {
 
 /* ═══════════════ storage ═══════════════ */
 
-let state = { workouts: [], vol: 0.7, voice: true, seeded: false };
+let state = { workouts: [], vol: 0.7, voice: true };
 
 function loadLocal() {
   try {
@@ -674,41 +670,6 @@ function touch(w) {
   w.updatedAt = Date.now();
   saveLocal();
 }
-function maybeSeed() {
-  if (state.seeded) return;
-  state.seeded = true;
-  if (state.workouts.length) { saveLocal(); return; }
-  const now = Date.now();
-  const C = {};
-  PALETTE.forEach(p => { C[p.n] = p.c; });
-  state.workouts.push({
-    id: 'example-tabata', example: true, updatedAt: now, name: 'Tabata — Core',
-    nodes: [
-      { id: uid(), type: 'section', name: 'Warm-up', color: C.Graphite, duration: 120 },
-      { id: uid(), type: 'loop', name: 'Tabata', color: C.Cobalt, reps: 8, children: [
-        { id: uid(), type: 'section', name: 'Hollow hold', color: C.Ember, duration: 20 },
-        { id: uid(), type: 'section', name: 'Rest',        color: C.Teal,  duration: 10 }
-      ] },
-      { id: uid(), type: 'section', name: 'Cool-down', color: C.Moss, duration: 120 }
-    ]
-  });
-  state.workouts.push({
-    id: 'example-ladder', example: true, updatedAt: now - 1, name: 'EMOM Ladder — Full Body',
-    nodes: [
-      { id: uid(), type: 'section', name: 'Warm-up', color: C.Graphite, duration: 180 },
-      { id: uid(), type: 'loop', name: 'Block', color: C.Plum, reps: 3, children: [
-        { id: uid(), type: 'loop', name: 'Minute', color: C.Cobalt, reps: 5, children: [
-          { id: uid(), type: 'section', name: 'Work',  color: C.Ember, duration: 40 },
-          { id: uid(), type: 'section', name: 'Reset', color: C.Teal,  duration: 20 }
-        ] },
-        { id: uid(), type: 'section', name: 'Block rest', color: C.Moss, duration: 90 }
-      ] },
-      { id: uid(), type: 'section', name: 'Cool-down', color: C.Graphite, duration: 120 }
-    ]
-  });
-  saveLocal();
-}
-
 /* ═══════════════ screens ═══════════════ */
 
 let screenName = 'library';
@@ -760,7 +721,6 @@ function renderLibrary() {
           '<span class="mono">' + fmtClock(s.total) + '</span>' +
           '<span class="dot"></span>' +
           '<span>' + s.steps.length + ' interval' + (s.steps.length === 1 ? '' : 's') + '</span>' +
-          (w.example ? '<span class="dot"></span><span class="tag">Example</span>' : '') +
         '</span>' +
       '</button>' +
       '<span class="card-actions">' +
@@ -1522,7 +1482,6 @@ window.addEventListener('popstate', () => {
 });
 
 loadLocal();
-maybeSeed();
 paintVolume();
 $('#btnVoice').setAttribute('aria-pressed', String(!!state.voice));
 renderLibrary();
